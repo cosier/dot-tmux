@@ -5,9 +5,6 @@ unbind C-b
 set -g prefix C-b
 bind C-a send-prefix
 
-# show session list
-bind a choose-tree -Zs
-
 # start with window 1 (instead of 0)
 set -g base-index 1
 
@@ -82,15 +79,15 @@ set -g status-position bottom
 set -g status-justify left
 set -g status-style 'fg=red'
 
-set -g status-left '#{?client_prefix,#[fg=green],#[fg=red]} '
+set -g status-left '#{?client_prefix,#[fg=green],#[fg=red]} '
 set -g status-left-length 10
 
 
 set -g status-right-style 'fg=black bg=yellow'
-set -g status-right '#[reverse]#[noreverse]%Y-%m-%d %H:%M#[reverse]#[noreverse]'
+set -g status-right '#[reverse]#[noreverse]%Y-%m-%d %H:%M#[reverse]#[noreverse]'
 
 setw -g window-status-current-style 'fg=black bg=red bold'
-setw -g window-status-current-format '#[reverse]#[noreverse]#I #W #F#[reverse]#[noreverse]'
+setw -g window-status-current-format '#[reverse]#[noreverse]#I #W #F#[reverse]#[noreverse]'
 
 setw -g window-status-style 'fg=red'
 setw -g window-status-separator ''
@@ -102,22 +99,15 @@ setw -g window-status-bell-style 'fg=yellow bg=red bold'
 set -g message-style 'fg=yellow bg=black bold'
 
 
-# ================================
-# X11 CLIPBOARD CONFIGURATION
-# ================================
 
-# Enable clipboard integration for X11
+# Enable clipboard integration
 set -g set-clipboard on
 set -g allow-passthrough on
 
-# Copy mode bindings optimized for X11
+# Copy mode bindings
 bind-key -T copy-mode-vi v send-keys -X begin-selection
-bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard"
-bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard"
-
-# Additional X11 clipboard bindings
-bind-key -T copy-mode-vi Y send-keys -X copy-pipe-and-cancel "xclip -selection primary"  # Y = primary selection
-bind-key -T copy-mode-vi C-y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard" # Ctrl+y = clipboard
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "~/bin/smartcopy"
+bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "~/bin/smartcopy"
 
 # Window switching with M- (Alt)
 bind -n M-1 select-window -t 1
@@ -139,3 +129,8 @@ bind -n M-H select-pane -L
 bind -n M-J select-pane -D
 bind -n M-K select-pane -U
 bind -n M-L select-pane -R
+
+# Multiple copy destinations
+bind-key -T copy-mode-vi Y send-keys -X copy-pipe-and-cancel "wl-copy"           # Y = remote Wayland only
+bind-key -T copy-mode-vi C-y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard"  # Ctrl+y = local X11 only
+# y already uses smartcopy (both)
